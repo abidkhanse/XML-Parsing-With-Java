@@ -16,10 +16,11 @@ public class XMLStudentParser {
 
     static final String ROOT     = "students";
 
-    static final String ELEMENT  = "student";
-    static final String ID       = "id";
-    static final String NAME     = "name";
-    static final String PHONE    = "phone";
+    static final String ELEMENT     = "student";
+    static final String ID          = "id";
+    static final String NAME        = "name";
+    static final String PHONE       = "phone";
+    static final String DEPARTMENT  = "department";
 
     private Document xmlDocument;
     private String fileName;
@@ -68,11 +69,12 @@ public class XMLStudentParser {
 
     private void printElement(Element element){
 
-        String id = getElementValueByTag(element, ID);
+        String id = element.getAttribute(ID);
         String name = getElementValueByTag(element,NAME);
         String phone = getElementValueByTag(element,PHONE);
+        String department = getElementValueByTag(element, DEPARTMENT);
 
-        System.out.println(id + " " + name + " " + phone);
+        System.out.println("Student ID = " + id + " Name = " + name + " Phone = " + phone + " Department = " + department);
     }
 
     void removeNode(String id){
@@ -91,13 +93,14 @@ public class XMLStudentParser {
 
                 Element student = (Element) students.item(i);
 
-                if(id.equals(getElementValueByTag(student, ID))){
+                if(id.equals(student.getAttribute(ID))){
 
                     if(root.removeChild(student) != null){
 
                         System.out.println("Student "+ id + " Removed");
                         xmlDocument.replaceChild(root,root);
                         found = true;
+
                     }
                     break;
                 }
@@ -128,11 +131,11 @@ public class XMLStudentParser {
 
                 Element student = (Element) students.item(i);
 
-                if (id.equals(getElementValueByTag(student, ID))) {
+                if(id.equals(student.getAttribute(ID))){
 
                     if (root.replaceChild(newNode, student) != null) {
 
-                        System.out.println("Student " + id + " Removed");
+                        System.out.println("Student " + id + " Updated");
                         xmlDocument.replaceChild(root, root);
                         found = true;
 
@@ -151,11 +154,13 @@ public class XMLStudentParser {
 
         Element node = xmlDocument.createElement(ELEMENT);
 
-        node.appendChild(createChildElement(ID, student.id ));
+        node.setAttribute(ID, student.id);
 
         node.appendChild(createChildElement(NAME, student.name));
 
         node.appendChild(createChildElement(PHONE, student.phone));
+
+        node.appendChild(createChildElement(DEPARTMENT, student.department ));
 
         return node;
 
@@ -177,6 +182,7 @@ public class XMLStudentParser {
         if(root == null){
 
             root = xmlDocument.createElement(ROOT);
+
             xmlDocument.appendChild(root);
         }
 
@@ -209,6 +215,8 @@ public class XMLStudentParser {
             e.printStackTrace();
         }
     }
+
+
 
     private String getElementValueByTag(Element element, String tag){
 

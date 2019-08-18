@@ -2,13 +2,13 @@ public class Engine {
 
     public static void addStudents(XMLStudentParser parser){
 
-        Student student = new Student("cs-1","Abid","+461111111");
+        Student student = new Student("cs-1","Abid","+461111111", "CS");
         parser.insertNode(student);
 
-        student = new Student("cs-2","Khan","+4622222222");
+        student = new Student("cs-2","Khan","+4622222222", "CS");
         parser.insertNode(student);
 
-        student = new Student("cs-3","Peter","+4633333333");
+        student = new Student("cs-3","Peter","+4633333333", "CS");
         parser.insertNode(student);
 
         parser.saveXMLFile();
@@ -16,7 +16,7 @@ public class Engine {
 
     public static void updateStudent(XMLStudentParser parser){
 
-        Student student = new Student("cs-3","Parker","+4633445566");
+        Student student = new Student("se-3","Parker","+4633445566", "SE");
 
         parser.updateNode("cs-3", student);
 
@@ -28,7 +28,7 @@ public class Engine {
 
     public static void removeStudent(XMLStudentParser parser){
 
-        parser.removeNode("cs-3");
+        parser.removeNode("se-3");
 
         parser.printXMLFile();
 
@@ -43,8 +43,7 @@ public class Engine {
         XMLStudentParser parser = new XMLStudentParser(fileName);
 
         addStudents(parser);
-
-        System.out.println("Check "+ fileName);
+        //System.out.println("Open file -> "+ fileName);
 
         //updateStudent(parser);
         //removeStudent(parser);
