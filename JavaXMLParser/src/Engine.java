@@ -43,9 +43,6 @@ public class Engine {
         XMLStudentParser parser = new XMLStudentParser(fileName);
 
         addStudents(parser);
-        //System.out.println("Open file -> "+ fileName);
 
-        //updateStudent(parser);
-        //removeStudent(parser);
     }
 }

@@ -77,7 +77,7 @@ public class XMLStudentParser {
         System.out.println("Student ID = " + id + " Name = " + name + " Phone = " + phone + " Department = " + department);
     }
 
-    void removeNode(String id){
+    boolean removeNode(String id) {
 
         boolean found = false;
 
@@ -97,23 +97,19 @@ public class XMLStudentParser {
 
                     if(root.removeChild(student) != null){
 
-                        System.out.println("Student "+ id + " Removed");
                         xmlDocument.replaceChild(root,root);
                         found = true;
-
                     }
                     break;
                 }
             }
         }
 
-        if (!found){
-            System.out.println(id + " does not exist");
-        }
+        return found
     }
 
 
-    void updateNode(String id, Student newObj) {
+    boolean updateNode(String id, Student newObj) {
 
         boolean found = false;
 
@@ -129,25 +125,21 @@ public class XMLStudentParser {
 
             if (node.getNodeType() == Element.ELEMENT_NODE) {
 
-                Element student = (Element) students.item(i);
+                Element student = (Element) node;
 
                 if(id.equals(student.getAttribute(ID))){
 
                     if (root.replaceChild(newNode, student) != null) {
 
-                        System.out.println("Student " + id + " Updated");
                         xmlDocument.replaceChild(root, root);
                         found = true;
-
                     }
                     break;
                 }
             }
         }
 
-        if (!found){
-            System.out.println(id + " does not exist");
-        }
+        return found;
     }
 
     private Element createNode(Student student){
@@ -177,6 +169,8 @@ public class XMLStudentParser {
 
     void insertNode(Student student){
 
+        boolean inserted = false;
+
         Element root = xmlDocument.getDocumentElement();
 
         if(root == null){
@@ -188,9 +182,12 @@ public class XMLStudentParser {
 
         Element newNode = createNode(student);
 
-        root.appendChild(newNode);
+        if(root.appendChild(newNode) != null){
+            inserted = true;
+            xmlDocument.replaceChild(root,root);
+        }
 
-        xmlDocument.replaceChild(root,root);
+        return inserted;
     }
 
     void saveXMLFile(){
