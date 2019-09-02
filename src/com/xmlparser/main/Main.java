@@ -1,4 +1,9 @@
-public class Engine {
+package com.xmlparser.main;
+
+import com.xmlparser.com.xmlparser.classes.Student;
+import com.xmlparser.logic.XMLStudentParser;
+
+public class Main {
 
     public static void addStudents(XMLStudentParser parser){
 

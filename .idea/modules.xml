@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/JavaXMLParser.iml" filepath="$PROJECT_DIR$/JavaXMLParser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/XML-Parsing-With-Java.iml" filepath="$PROJECT_DIR$/XML-Parsing-With-Java.iml" />
     </modules>
   </component>
 </project>

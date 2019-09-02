@@ -1,3 +1,6 @@
+package com.xmlparser.logic;
+
+import com.xmlparser.com.xmlparser.classes.Student;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,7 +28,7 @@ public class XMLStudentParser {
     private Document xmlDocument;
     private String fileName;
 
-    XMLStudentParser(String fileName){
+    public XMLStudentParser(String fileName){
 
         this.fileName = fileName;
 
@@ -50,7 +53,7 @@ public class XMLStudentParser {
     }
 
 
-    void printXMLFile(){
+    public void printXMLFile(){
 
         NodeList nodeList = xmlDocument.getDocumentElement().getChildNodes();
 
@@ -77,7 +80,7 @@ public class XMLStudentParser {
         System.out.println("Student ID = " + id + " Name = " + name + " Phone = " + phone + " Department = " + department);
     }
 
-    boolean removeNode(String id) {
+    public boolean removeNode(String id) {
 
         boolean found = false;
 
@@ -105,11 +108,11 @@ public class XMLStudentParser {
             }
         }
 
-        return found
+        return found;
     }
 
 
-    boolean updateNode(String id, Student newObj) {
+    public boolean updateNode(String id, Student newObj) {
 
         boolean found = false;
 
@@ -146,13 +149,13 @@ public class XMLStudentParser {
 
         Element node = xmlDocument.createElement(ELEMENT);
 
-        node.setAttribute(ID, student.id);
+        node.setAttribute(ID, student.getId());
 
-        node.appendChild(createChildElement(NAME, student.name));
+        node.appendChild(createChildElement(NAME, student.getName()));
 
-        node.appendChild(createChildElement(PHONE, student.phone));
+        node.appendChild(createChildElement(PHONE, student.getPhone()));
 
-        node.appendChild(createChildElement(DEPARTMENT, student.department ));
+        node.appendChild(createChildElement(DEPARTMENT, student.getDepartment() ));
 
         return node;
 
@@ -167,7 +170,7 @@ public class XMLStudentParser {
         return element;
     }
 
-    void insertNode(Student student){
+    public  boolean insertNode(Student student){
 
         boolean inserted = false;
 
@@ -190,7 +193,7 @@ public class XMLStudentParser {
         return inserted;
     }
 
-    void saveXMLFile(){
+    public void saveXMLFile(){
 
         TransformerFactory factory = TransformerFactory.newInstance();
 
