@@ -1,19 +1,26 @@
 package com.xmlparser.main;
 
-import com.xmlparser.com.xmlparser.classes.Student;
+import com.xmlparser.classes.Student;
 import com.xmlparser.logic.XMLStudentParser;
+
+import java.util.ArrayList;
 
 public class Main {
 
     public static void addStudents(XMLStudentParser parser){
 
-        Student student = new Student("cs-1","Abid","+461111111", "CS");
+        ArrayList<String> courses = new ArrayList<>();
+        courses.add("Intro to Computer Science");
+        courses.add("Calculus");
+        courses.add("Physics");
+
+        Student student = new Student("cs-1","Abid","+461111111", "CS",courses);
         parser.insertNode(student);
 
-        student = new Student("cs-2","Khan","+4622222222", "CS");
+        student = new Student("cs-2","Khan","+4622222222", "CS",courses);
         parser.insertNode(student);
 
-        student = new Student("cs-3","Peter","+4633333333", "CS");
+        student = new Student("cs-3","Peter","+4633333333", "CS",courses);
         parser.insertNode(student);
 
         parser.saveXMLFile();
@@ -21,23 +28,24 @@ public class Main {
 
     public static void updateStudent(XMLStudentParser parser){
 
-        Student student = new Student("se-3","Parker","+4633445566", "SE");
+        ArrayList<String> courses = new ArrayList<>();
+        courses.add("Intro to Software Engineering");
+        courses.add("Intro to Programming");
+        courses.add("Calculus");
+        courses.add("Physics");
 
-        parser.updateNode("cs-3", student);
+        Student student = new Student("se-3","Peter","+4633333333", "SE", courses);
 
-        parser.printXMLFile();
-
-        parser.saveXMLFile();
-
+        if(parser.updateNode("cs-3", student)){
+            parser.saveXMLFile();
+        }
     }
 
     public static void removeStudent(XMLStudentParser parser){
 
-        parser.removeNode("se-3");
-
-        parser.printXMLFile();
-
-        parser.saveXMLFile();
+        if(parser.removeNode("se-3")){
+            parser.saveXMLFile();
+        }
     }
 
 
@@ -47,7 +55,13 @@ public class Main {
 
         XMLStudentParser parser = new XMLStudentParser(fileName);
 
-        addStudents(parser);
+        //addStudents(parser);
+
+        //parser.printXMLFile();
+
+        // updateStudent(parser);
+
+        //removeStudent(parser);
 
     }
 }

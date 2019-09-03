@@ -1,6 +1,6 @@
 package com.xmlparser.logic;
 
-import com.xmlparser.com.xmlparser.classes.Student;
+import com.xmlparser.classes.Student;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.util.ArrayList;
 
 public class XMLStudentParser {
 
@@ -24,6 +25,7 @@ public class XMLStudentParser {
     static final String NAME        = "name";
     static final String PHONE       = "phone";
     static final String DEPARTMENT  = "department";
+    static final String COURSES     = "courses";
 
     private Document xmlDocument;
     private String fileName;
@@ -35,6 +37,7 @@ public class XMLStudentParser {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
         File file = new File(fileName);
+
         try {
 
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
@@ -47,6 +50,8 @@ public class XMLStudentParser {
             }
 
         } catch (Exception e) {
+
+            // Create "Source" folder, parallel to "src" folder
             e.printStackTrace();
         }
 
@@ -73,11 +78,29 @@ public class XMLStudentParser {
     private void printElement(Element element){
 
         String id = element.getAttribute(ID);
+
         String name = getElementValueByTag(element,NAME);
+
         String phone = getElementValueByTag(element,PHONE);
+
         String department = getElementValueByTag(element, DEPARTMENT);
 
-        System.out.println("Student ID = " + id + " Name = " + name + " Phone = " + phone + " Department = " + department);
+        System.out.println("Student ID = " + id + ", Name = " + name + ", Phone = " + phone + ", Department = " + department);
+
+        NodeList courses = getElementsByTag(element, COURSES);
+
+        System.out.println("Courses");
+        System.out.println("=======");
+
+        Node course;
+
+        for (int i = 0; i < courses.getLength(); i++) {
+
+            course = courses.item(i);
+
+            System.out.println(course.getTextContent());
+
+        }
     }
 
     public boolean removeNode(String id) {
@@ -94,7 +117,7 @@ public class XMLStudentParser {
 
             if(node.getNodeType() == Element.ELEMENT_NODE) {
 
-                Element student = (Element) students.item(i);
+                Element student = (Element) node;
 
                 if(id.equals(student.getAttribute(ID))){
 
@@ -157,8 +180,31 @@ public class XMLStudentParser {
 
         node.appendChild(createChildElement(DEPARTMENT, student.getDepartment() ));
 
+        node.appendChild(createChildElementsList(COURSES, "subject", student.getCourses()) );
+
         return node;
 
+    }
+
+    private Element createChildElementsList(String tag, String heading, ArrayList<String> list){
+
+        Element element = xmlDocument.createElement(tag);
+
+        int id = 1;
+
+        Element courseElement;
+
+        for (String course : list) {
+
+            courseElement = xmlDocument.createElement(heading + "-" + id++);
+
+            courseElement.appendChild(xmlDocument.createTextNode(course));
+
+            element.appendChild(courseElement);
+
+        }
+
+        return element;
     }
 
     private Element createChildElement(String tag, String value){
@@ -186,7 +232,9 @@ public class XMLStudentParser {
         Element newNode = createNode(student);
 
         if(root.appendChild(newNode) != null){
+
             inserted = true;
+
             xmlDocument.replaceChild(root,root);
         }
 
@@ -217,9 +265,15 @@ public class XMLStudentParser {
     }
 
 
-
     private String getElementValueByTag(Element element, String tag){
 
         return element.getElementsByTagName(tag).item(0).getTextContent();
     }
+
+    private NodeList getElementsByTag(Element element, String tag){
+
+        return element.getElementsByTagName(tag);
+    }
+
+
 }
