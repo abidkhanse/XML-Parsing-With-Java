@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.ArrayList;
 
-public class XMLStudentParser {
+public class XMLParser {
 
     static final String ROOT     = "students";
 
@@ -30,7 +30,7 @@ public class XMLStudentParser {
     private Document xmlDocument;
     private String fileName;
 
-    public XMLStudentParser(String fileName){
+    public XMLParser(String fileName){
 
         this.fileName = fileName;
 
@@ -54,13 +54,92 @@ public class XMLStudentParser {
             // Create "Source" folder, parallel to "src" folder
             e.printStackTrace();
         }
+    }
 
+
+    public  boolean insertNode(Student student){
+
+        boolean inserted = false;
+
+        Element root = xmlDocument.getDocumentElement();
+
+        if(root == null){
+
+            root = xmlDocument.createElement(ROOT);
+
+            xmlDocument.appendChild(root);
+        }
+
+        Element newNode = createNode(student);
+
+        if(root.appendChild(newNode) != null){
+
+            inserted = true;
+
+            xmlDocument.replaceChild(root,root);
+        }
+
+        return inserted;
+    }
+
+    private Element createNode(Student student){
+
+        Element node = xmlDocument.createElement(ELEMENT);
+
+        node.setAttribute(ID, student.getId());
+
+        node.appendChild(createChildElement(NAME, student.getName()));
+
+        node.appendChild(createChildElement(PHONE, student.getPhone()));
+
+        node.appendChild(createChildElement(DEPARTMENT, student.getDepartment() ));
+
+        node.appendChild(createChildElementsList(COURSES, "subject", student.getCourses()) );
+
+        return node;
+
+    }
+
+    private Element createChildElement(String tag, String value){
+
+        Element element = xmlDocument.createElement(tag);
+
+        element.appendChild(xmlDocument.createTextNode(value));
+
+        return element;
+    }
+
+    private Element createChildElementsList(String tag, String heading, ArrayList<String> list){
+
+        Element element = xmlDocument.createElement(tag);
+
+        int id = 1;
+
+        Element courseElement;
+
+        for (String course : list) {
+
+            courseElement = xmlDocument.createElement(heading + "-" + id++);
+
+            courseElement.appendChild(xmlDocument.createTextNode(course));
+
+            element.appendChild(courseElement);
+
+        }
+
+        return element;
     }
 
 
     public void printXMLFile(){
 
-        NodeList nodeList = xmlDocument.getDocumentElement().getChildNodes();
+        Element root = xmlDocument.getDocumentElement();
+
+        if(root == null) {
+            return ;
+        }
+
+        NodeList nodeList = root.getChildNodes();
 
         for (int i = 0; i < nodeList.getLength(); i++) {
 
@@ -109,6 +188,10 @@ public class XMLStudentParser {
 
         Element root = xmlDocument.getDocumentElement();
 
+        if(root == null) {
+            return found;
+        }
+
         NodeList students = root.getChildNodes();
 
         for (int i = 0; i < students.getLength(); i++) {
@@ -141,6 +224,10 @@ public class XMLStudentParser {
 
         Element root = xmlDocument.getDocumentElement();
 
+        if(root == null) {
+            return found;
+        }
+
         Element newNode = createNode(newObj);
 
         NodeList students = root.getChildNodes();
@@ -168,78 +255,6 @@ public class XMLStudentParser {
         return found;
     }
 
-    private Element createNode(Student student){
-
-        Element node = xmlDocument.createElement(ELEMENT);
-
-        node.setAttribute(ID, student.getId());
-
-        node.appendChild(createChildElement(NAME, student.getName()));
-
-        node.appendChild(createChildElement(PHONE, student.getPhone()));
-
-        node.appendChild(createChildElement(DEPARTMENT, student.getDepartment() ));
-
-        node.appendChild(createChildElementsList(COURSES, "subject", student.getCourses()) );
-
-        return node;
-
-    }
-
-    private Element createChildElementsList(String tag, String heading, ArrayList<String> list){
-
-        Element element = xmlDocument.createElement(tag);
-
-        int id = 1;
-
-        Element courseElement;
-
-        for (String course : list) {
-
-            courseElement = xmlDocument.createElement(heading + "-" + id++);
-
-            courseElement.appendChild(xmlDocument.createTextNode(course));
-
-            element.appendChild(courseElement);
-
-        }
-
-        return element;
-    }
-
-    private Element createChildElement(String tag, String value){
-
-        Element element = xmlDocument.createElement(tag);
-
-        element.appendChild(xmlDocument.createTextNode(value));
-
-        return element;
-    }
-
-    public  boolean insertNode(Student student){
-
-        boolean inserted = false;
-
-        Element root = xmlDocument.getDocumentElement();
-
-        if(root == null){
-
-            root = xmlDocument.createElement(ROOT);
-
-            xmlDocument.appendChild(root);
-        }
-
-        Element newNode = createNode(student);
-
-        if(root.appendChild(newNode) != null){
-
-            inserted = true;
-
-            xmlDocument.replaceChild(root,root);
-        }
-
-        return inserted;
-    }
 
     public void saveXMLFile(){
 
@@ -247,15 +262,15 @@ public class XMLStudentParser {
 
         try {
 
+            DOMSource domSource = new DOMSource(xmlDocument);
+
+            StreamResult streamResult = new StreamResult(new File(fileName));
+
             Transformer transformer = factory.newTransformer();
 
             transformer.setOutputProperty(OutputKeys.INDENT,"yes");
             transformer.setOutputProperty(OutputKeys.VERSION,"1.0");
             transformer.setOutputProperty(OutputKeys.STANDALONE,"no");
-
-            DOMSource domSource = new DOMSource(xmlDocument);
-
-            StreamResult streamResult = new StreamResult(new File(fileName));
 
             transformer.transform(domSource,streamResult);
 

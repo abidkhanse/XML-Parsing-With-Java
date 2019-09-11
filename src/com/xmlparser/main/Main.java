@@ -1,13 +1,13 @@
 package com.xmlparser.main;
 
 import com.xmlparser.classes.Student;
-import com.xmlparser.logic.XMLStudentParser;
+import com.xmlparser.logic.XMLParser;
 
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void addStudents(XMLStudentParser parser){
+    public static void addStudents(XMLParser parser){
 
         ArrayList<String> courses = new ArrayList<>();
         courses.add("Intro to Computer Science");
@@ -26,7 +26,7 @@ public class Main {
         parser.saveXMLFile();
     }
 
-    public static void updateStudent(XMLStudentParser parser){
+    public static void updateStudent(XMLParser parser){
 
         ArrayList<String> courses = new ArrayList<>();
         courses.add("Intro to Software Engineering");
@@ -39,12 +39,18 @@ public class Main {
         if(parser.updateNode("cs-3", student)){
             parser.saveXMLFile();
         }
+        else {
+            System.out.println("Record not found");
+        }
     }
 
-    public static void removeStudent(XMLStudentParser parser){
+    public static void removeStudent(XMLParser parser){
 
         if(parser.removeNode("se-3")){
             parser.saveXMLFile();
+        }
+        else {
+            System.out.println("Record not found");
         }
     }
 
@@ -53,13 +59,15 @@ public class Main {
 
         String fileName = "Source/studentFile.xml";
 
-        XMLStudentParser parser = new XMLStudentParser(fileName);
+        XMLParser parser = new XMLParser(fileName);
+
+
 
         //addStudents(parser);
 
         //parser.printXMLFile();
 
-        // updateStudent(parser);
+        //updateStudent(parser);
 
         //removeStudent(parser);
 
