@@ -56,7 +56,6 @@ public class XMLParser {
         }
     }
 
-
     public  boolean insertNode(Student student){
 
         boolean inserted = false;
@@ -73,10 +72,7 @@ public class XMLParser {
         Element newNode = createNode(student);
 
         if(root.appendChild(newNode) != null){
-
             inserted = true;
-
-            xmlDocument.replaceChild(root,root);
         }
 
         return inserted;
@@ -131,6 +127,108 @@ public class XMLParser {
     }
 
 
+
+    public boolean removeNode(String id) {
+
+        boolean found = false;
+
+        Element root = xmlDocument.getDocumentElement();
+
+        if(root == null) {
+            return found;
+        }
+
+        NodeList students = root.getChildNodes();
+
+        for (int i = 0; i < students.getLength(); i++) {
+
+            Node node = students.item(i);
+
+            if(node.getNodeType() == Element.ELEMENT_NODE) {
+
+                Element student = (Element) node;
+
+                if(id.equals(student.getAttribute(ID))){
+
+                    if(root.removeChild(student) != null){
+                        found = true;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    public boolean updateNode(String id, Student newObj) {
+
+        boolean found = false;
+
+        Element root = xmlDocument.getDocumentElement();
+
+        if(root == null) {
+            return found;
+        }
+
+        Element newNode = createNode(newObj);
+
+        NodeList students = root.getChildNodes();
+
+        for (int i = 0; i < students.getLength(); i++) {
+
+            Node node = students.item(i);
+
+            if (node.getNodeType() == Element.ELEMENT_NODE) {
+
+                Element student = (Element) node;
+
+                if(id.equals(student.getAttribute(ID))){
+
+                    if (root.replaceChild(newNode, student) != null) {
+                        found = true;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    public void saveXMLFile(){
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+
+        try {
+
+            DOMSource domSource = new DOMSource(xmlDocument);
+
+            StreamResult streamResult = new StreamResult(new File(fileName));
+
+            Transformer transformer = factory.newTransformer();
+
+            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+            transformer.setOutputProperty(OutputKeys.VERSION,"1.0");
+            transformer.setOutputProperty(OutputKeys.STANDALONE,"no");
+
+            transformer.transform(domSource,streamResult);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getElementValueByTag(Element element, String tag){
+
+        return element.getElementsByTagName(tag).item(0).getTextContent();
+    }
+
+    private NodeList getElementsByTag(Element element, String tag){
+
+        return element.getElementsByTagName(tag);
+    }
+
     public void printXMLFile(){
 
         Element root = xmlDocument.getDocumentElement();
@@ -181,114 +279,4 @@ public class XMLParser {
 
         }
     }
-
-    public boolean removeNode(String id) {
-
-        boolean found = false;
-
-        Element root = xmlDocument.getDocumentElement();
-
-        if(root == null) {
-            return found;
-        }
-
-        NodeList students = root.getChildNodes();
-
-        for (int i = 0; i < students.getLength(); i++) {
-
-            Node node = students.item(i);
-
-            if(node.getNodeType() == Element.ELEMENT_NODE) {
-
-                Element student = (Element) node;
-
-                if(id.equals(student.getAttribute(ID))){
-
-                    if(root.removeChild(student) != null){
-
-                        xmlDocument.replaceChild(root,root);
-                        found = true;
-                    }
-                    break;
-                }
-            }
-        }
-
-        return found;
-    }
-
-
-    public boolean updateNode(String id, Student newObj) {
-
-        boolean found = false;
-
-        Element root = xmlDocument.getDocumentElement();
-
-        if(root == null) {
-            return found;
-        }
-
-        Element newNode = createNode(newObj);
-
-        NodeList students = root.getChildNodes();
-
-        for (int i = 0; i < students.getLength(); i++) {
-
-            Node node = students.item(i);
-
-            if (node.getNodeType() == Element.ELEMENT_NODE) {
-
-                Element student = (Element) node;
-
-                if(id.equals(student.getAttribute(ID))){
-
-                    if (root.replaceChild(newNode, student) != null) {
-
-                        xmlDocument.replaceChild(root, root);
-                        found = true;
-                    }
-                    break;
-                }
-            }
-        }
-
-        return found;
-    }
-
-
-    public void saveXMLFile(){
-
-        TransformerFactory factory = TransformerFactory.newInstance();
-
-        try {
-
-            DOMSource domSource = new DOMSource(xmlDocument);
-
-            StreamResult streamResult = new StreamResult(new File(fileName));
-
-            Transformer transformer = factory.newTransformer();
-
-            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-            transformer.setOutputProperty(OutputKeys.VERSION,"1.0");
-            transformer.setOutputProperty(OutputKeys.STANDALONE,"no");
-
-            transformer.transform(domSource,streamResult);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private String getElementValueByTag(Element element, String tag){
-
-        return element.getElementsByTagName(tag).item(0).getTextContent();
-    }
-
-    private NodeList getElementsByTag(Element element, String tag){
-
-        return element.getElementsByTagName(tag);
-    }
-
-
 }

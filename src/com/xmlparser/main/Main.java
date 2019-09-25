@@ -61,15 +61,13 @@ public class Main {
 
         XMLParser parser = new XMLParser(fileName);
 
-
-
         //addStudents(parser);
 
         //parser.printXMLFile();
 
         //updateStudent(parser);
 
-        //removeStudent(parser);
+        removeStudent(parser);
 
     }
 }
